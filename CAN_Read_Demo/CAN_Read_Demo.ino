@@ -18,11 +18,9 @@ Distributed as-is; no warranty is given.
 
 void setup() {
   Serial.begin(9600); // For debug use
-  Serial.println("CAN Read - Testing receival of CAN Bus message");  
-  delay(1000);
   
   if(Canbus.init(CANSPEED_500))  //Initialise MCP2515 CAN controller at the specified speed
-    Serial.println("CAN Init ok");
+    Serial.println("<<START>>");
   else
     Serial.println("Can't init CAN");
     
@@ -39,18 +37,10 @@ if (!mcp2515_check_message())
 	{
         //if(message.id == 0x620 and message.data[2] == 0xFF)  //uncomment when you want to filter
              //{
-               
-               Serial.print("ID: ");
+               auto time = millis();
                Serial.print(message.id,HEX);
                Serial.print(", ");
-               Serial.print("Data: ");
-               Serial.print(message.header.length,DEC);
-               for(int i=0;i<message.header.length;i++) 
-                {	
-                  Serial.print(message.data[i],HEX);
-                  Serial.print(" ");
-                }
-               Serial.println("");
+               Serial.println(time);
              //}
            }}
 

@@ -35,10 +35,10 @@ void loop()
 {
 tCAN message;
 
-        message.id = 0x631; //formatted in HEX
+        message.id = 0x630; //formatted in HEX
         message.header.rtr = 0;
         message.header.length = 8; //formatted in DEC
-        message.data[0] = 0x40;
+        message.data[0] = 0x00;
 	message.data[1] = 0x05;
 	message.data[2] = 0x30;
 	message.data[3] = 0xFF; //formatted in HEX
@@ -47,6 +47,9 @@ tCAN message;
 	message.data[6] = 0x00;
 	message.data[7] = 0x00;
 
+mcp2515_bit_modify(CANCTRL, (1<<REQOP2)|(1<<REQOP1)|(1<<REQOP0), 0);
+mcp2515_send_message(&message);
+message.id=0x631;
 mcp2515_bit_modify(CANCTRL, (1<<REQOP2)|(1<<REQOP1)|(1<<REQOP0), 0);
 mcp2515_send_message(&message);
 Serial.println("Message Sent");
