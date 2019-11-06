@@ -1,4 +1,4 @@
-
+import time as tt
 import serial
 
 serialport = "/dev/ttyACM0"
@@ -9,8 +9,11 @@ ys = []
 
 ser = serial.Serial(serialport, baudRate)
 vals={}
-while(1):
+yolo = tt.time()
+
+while(tt.time()-yolo<100):
     line = ser.readline().decode()[:-1]
+    #print(line)
     if ("<<START>>" in line):
         continue
     temp = line.split(', ')
@@ -26,6 +29,6 @@ while(1):
         
         vals[id][0] = int(time)
         vals[id][1] += 1
-        vals[id][2] = int((freq*count + int(time)-int(last_time))/(count+1))
+        vals[id][2] = int(int(time)-int(last_time))
 
-    print(id,vals[id][2]) 
+    print("{},{},{}".format(vals[id][0],id,vals[id][2])) 
