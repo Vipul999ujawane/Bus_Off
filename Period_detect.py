@@ -1,7 +1,7 @@
 import time as tt
 import serial
 
-serialport = "/dev/ttyACM0"
+serialport = "/dev/ttyACM1"
 baudRate = 9600
 
 xs = []

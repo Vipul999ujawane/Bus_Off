@@ -1,3 +1,12 @@
+/****************************************************************************
+CAN Write Demo for the SparkFun CAN Bus Shield. 
+
+Written by Stephen McCoy. 
+Original tutorial available here: http://www.instructables.com/id/CAN-Bus-Sniffing-and-Broadcasting-with-Arduino
+Used with permission 2016. License CC By SA. 
+
+Distributed as-is; no warranty is given.
+*************************************************************************/
 
 #include <Canbus.h>
 #include <defaults.h>
@@ -19,34 +28,63 @@ void setup() {
     
   delay(1000);
 }
-  int targetPeriod;
-  unsigned int count=0;
-  unsigned long start, targetID= 0x631, maxJitter = 35; // jitter in microseconds
-  unsigned long sum=0, attackId=1;
-  unsigned char attackMsg[8] = {7, 193, 240 , 124, 7, 7, 7, 7};// avoiding bit stuff error  
+
+//********************************Main Loop*********************************//
+int count;
+
+
+void loop() 
+{
+ tCAN message, amessage;
+
+  amessage.id = 0x631; //formatted in HEX
+  amessage.header.rtr = 0;
+  amessage.header.length = 8; //formatted in DEC
+  amessage.data[0] = 0xFF;
+  amessage.data[1] = 0x00;
+  amessage.data[2] = 0x27;
+  amessage.data[3] = 0x00; //formatted in HEX
+  amessage.data[4] = 0x0F;
+  amessage.data[5] = 0xFF;
+  amessage.data[6] = 0x00;
+  amessage.data[7] = 0xFF;
   
+         
+  message.header.rtr = 0;
+  message.header.length = 8; //formatted in DEC
+  message.data[0] = 0xFF;
+  message.data[1] = 0xFF;
+  message.data[2] = 0x30;
+  message.data[3] = 0xFF; //formatted in HEX
+  message.data[4] = 0x00;
+  message.data[5] = 0xFF;
+  message.data[6] = 0xFF;
+  message.data[7] = 0xFF;
+  message.id = 0x630; // 1st message
 
-void loop() {
-  tCAN message;
+  mcp2515_bit_modify(CANCTRL, (1<<REQOP2)|(1<<REQOP1)|(1<<REQOP0), 0);
+  Serial.println("Sending id0x630");
+  mcp2515_send_message(&message);
 
-  auto error_tec = mcp2515_read_register(TEC);
-  Serial.print("TEC Count : ");
+  delay(1000);
+  message.id = 0x631;  // 2nd message
+
+  Serial.println("Sending id0x631");
+  mcp2515_send_message(&amessage);
+        
+  auto  error_tec = mcp2515_read_register(TEC);
+  Serial.print("TEC Count of victim : ");
   Serial.println(error_tec);
-  if(!mcp2515_check_message()){
-    if(mcp2515_get_message(&message)){
-      if(message.id == 0x631){
-        Serial.print("ID: ");
-        Serial.print(message.id,HEX);
-        Serial.print(", ");
-        Serial.print("Data: ");
-        Serial.print(message.header.length,DEC);
-        for(int i=0;i<message.header.length;i++) 
-         {  
-           Serial.print(message.data[i],HEX);
-           Serial.print(" ");
-         }
-        Serial.println("");
-      }
-    }
-  }
+    
+  delay(1000);
+  message.id = 0x632;    //3rd message
+  
+  Serial.println("Sending id0x632");
+  mcp2515_send_message(&message);
+        
+  error_tec = mcp2515_read_register(TEC);
+  Serial.print("TEC Count of victim : ");
+  Serial.println(error_tec);
+
+  delay(1000);
 }

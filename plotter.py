@@ -3,7 +3,7 @@ import csv
 
 vals={}
 spamreader=""
-with open('data.csv',"r") as csvf:
+with open('data2.csv',"r") as csvf:
     spamreader = csv.reader(csvf, delimiter=',', quotechar='|')
 
     for row in spamreader:
@@ -26,6 +26,7 @@ for ids in vals:
         #print(x,y)
 plt.legend()
 plt.xlabel("Time (ms)")
-plt.ylabel("Periodicity (ms)")
-plt.savefig('DOS_CAN.png')
+plt.ylabel("Transmission Time (ms)")
+plt.savefig('DOS_CAN2.png')
+plt.title("Transmission Time V/S (During and without Attack)")
 plt.show()
